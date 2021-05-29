@@ -8,8 +8,11 @@ import {
   ServiceLocator,
   Shutdown,
   Startup,
-} from '../../ioc/src';
-import { Method, AbstractClass, AllInstanceType, Newable } from '../../ioc/src/type-utils';
+  Method,
+  AbstractClass,
+  AllInstanceType,
+  Newable,
+} from '@badbury/ioc';
 import { Timer, TimerController, DurationFunction } from './timer-controller';
 
 export abstract class TimerDefinition<A extends AbstractClass[] = []>
