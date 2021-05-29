@@ -9,7 +9,7 @@ import {
   Startup,
   AbstractClass,
   Callable,
-  callable,
+  callableSetter,
 } from '@badbury/ioc';
 import { Timer, TimerController, DurationFunction } from './timer-controller';
 
@@ -19,7 +19,7 @@ export class TimerDefinition<A extends AbstractClass[] = []>
 
   constructor(public readonly timer: Timer, private readonly callable: Callable) {}
 
-  register(resolver: ServiceLocator, controller: TimerController, sink: EventSink): void {
+  register(resolver: ServiceLocator, sink: EventSink, controller: TimerController): void {
     const timer = this.timer.do(() => this.callable.handle([], resolver, sink));
     controller.use(timer);
   }
@@ -45,7 +45,9 @@ export class TimerDefinitionBuilder<A extends AbstractClass[] = []> {
     return new TimerDefinitionBuilder(this.timer, args);
   }
 
-  do = callable<[], A>(this.args).map((callable) => new TimerDefinition(this.timer, callable));
+  do = callableSetter()
+    .withContainerArgs(this.args)
+    .map((callable) => new TimerDefinition(this.timer, callable));
 }
 
 export class TimerModule {
@@ -53,11 +55,11 @@ export class TimerModule {
     return [
       bind(TimerController),
       on(RegisterDefinitions)
-        .use(TimerController, EventSink)
-        .do((event, controller, sink) => {
+        .use(TimerController)
+        .do((event, controller) => {
           for (const definition of event.definitions) {
             if (definition instanceof TimerDefinition) {
-              definition.register(event.container, controller, sink);
+              definition.register(event.container, event.container, controller);
             }
           }
         }),
