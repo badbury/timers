@@ -20,7 +20,7 @@ export class TimerDefinition<A extends AbstractClass[] = []>
   constructor(public readonly timer: Timer, private readonly callable: Callable) {}
 
   register(resolver: ServiceLocator, sink: EventSink, controller: TimerController): void {
-    const timer = this.timer.do(() => this.callable.handle([], resolver, sink));
+    const timer = this.timer.do(() => this.callable.call([], resolver, sink));
     controller.use(timer);
   }
 

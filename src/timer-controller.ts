@@ -124,8 +124,6 @@ export class Timer implements ChainableDuration {
   }
 }
 
-new Timer({ handler: () => 123, intervalInMs: 1 });
-
 export class TimerController {
   protected timers: Timer[] = [];
 
